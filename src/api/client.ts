@@ -10,15 +10,15 @@ import type {
   PatientResponse 
 } from '../types';
 
-const baseURL = (import.meta as any).env?.VITE_API_URL || 'https://acucogn-scribe-backend-g5fhhdesh8bcaebu.centralus-01.azurewebsites.net';
+const baseURL = (import.meta as any).env?.VITE_API_URL || 'https://test-acu-backend-ggfjf6bpasgtb9fz.canadacentral-01.azurewebsites.net';
 
 const useProxy = false; 
 
 const instance = axios.create({
   baseURL: useProxy ? '/api' : baseURL,
-  withCredentials: true,
-  timeout: 15000,  // 5 second timeout to prevent hanging
+  withCredentials: true,  
 });
+
 
 instance.defaults.headers.common['Cache-Control'] = 'no-store'
 instance.defaults.headers.common['Pragma'] = 'no-cache'
