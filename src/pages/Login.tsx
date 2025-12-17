@@ -36,6 +36,26 @@ export function Login() {
     setError('Google Sign-In failed. Please try again.');
   };
 
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const submitEmailLogin = async (e:any) => {
+    e.preventDefault();
+    setError('');
+    setIsLoading(true);
+    try{
+      const data = await (await import('../api/client')).authApi.emailLogin(email, password);
+      if(data.status === 'success' && data.user){
+        login(data.user);
+        navigate('/');
+      }else{
+        setError('Sign-in failed');
+      }
+    }catch(err:any){
+      setError(err?.response?.data?.detail || err?.message || 'Sign-in failed');
+    }finally{setIsLoading(false)}
+  }
+
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
       <div style={{ 
@@ -103,22 +123,64 @@ export function Login() {
             </div>
           )}
 
+          <form onSubmit={submitEmailLogin} style={{display:'flex',flexDirection:'column',gap:8,alignItems:'stretch',marginBottom:20}}>
+            <input placeholder="Email" value={email} onChange={(e)=>setEmail(e.target.value)} style={{padding:12,borderRadius:8,border:'1px solid #ddd'}} />
+            <input placeholder="Password" type="password" value={password} onChange={(e)=>setPassword(e.target.value)} style={{padding:12,borderRadius:8,border:'1px solid #ddd'}} />
+            <div style={{display:'flex',justifyContent:'center',alignItems:'center',marginTop:8}}>
+              <button
+                type="submit"
+                disabled={isLoading}
+                style={{
+                  padding:'10px 24px',
+                  borderRadius:8,
+                  background:isLoading ? '#8fa7b0' : '#2c5f6f',
+                  color:'white',
+                  border:'none',
+                  fontWeight:600,
+                  cursor:isLoading ? 'default' : 'pointer',
+                  boxShadow:'0 4px 12px rgba(44,95,111,0.4)'
+                }}
+              >
+                {isLoading ? 'Signing in...' : 'Sign In'}
+              </button>
+            </div>
+          </form>
+
           <div style={{
             display: 'flex',
-            justifyContent: 'center',
+            flexDirection: 'column',
+            alignItems: 'stretch',
+            gap: 12,
             marginBottom: '30px',
             opacity: isLoading ? 0.6 : 1,
             pointerEvents: isLoading ? 'none' : 'auto'
           }}>
-            <GoogleLogin
-              onSuccess={handleGoogleSuccess}
-              onError={handleGoogleError}
-              useOneTap
-              theme="filled_blue"
-              size="large"
-              text="signin_with"
-              shape="rectangular"
-            />
+            <div style={{display:'flex',alignItems:'center',gap:8,margin:'4px 0'}}>
+              <div style={{flex:1,height:1,background:'#e0e0e0'}} />
+              <span style={{fontSize:12,color:'#999',textTransform:'uppercase',letterSpacing:1}}>Or continue with</span>
+              <div style={{flex:1,height:1,background:'#e0e0e0'}} />
+            </div>
+            <div
+              style={{
+                borderRadius:12,
+                padding:'10px 12px',
+                border:'1px solid #e0e0e0',
+                backgroundColor:'#f9fafb',
+                display:'flex',
+                justifyContent:'center',
+                boxShadow:'0 4px 16px rgba(0,0,0,0.06)',
+              }}
+            >
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={handleGoogleError}
+                useOneTap
+                theme="outline"
+                size="large"
+                text="continue_with"
+                shape="pill"
+              />
+            </div>
           </div>
 
           {isLoading && (
@@ -148,6 +210,21 @@ export function Login() {
             paddingTop: '24px',
             borderTop: '1px solid #e0e0e0'
           }}>
+            <div style={{ marginBottom: '16px', textAlign: 'center' }}>
+              <span style={{ fontSize: '13px', color: '#5a7c89' }}>
+                Don&apos;t have an account?{' '}
+                <a
+                  href="/register"
+                  style={{
+                    color: '#2c5f6f',
+                    fontWeight: 600,
+                    textDecoration: 'underline',
+                  }}
+                >
+                  Register
+                </a>
+              </span>
+            </div>
             <p style={{ 
               fontSize: '12px', 
               color: '#888', 

@@ -5,6 +5,7 @@ import { Doctor } from './pages/Doctor';
 import { Receptionist } from './pages/Receptionist';
 import { User } from './pages/User'; 
 import { Login } from './pages/Login';
+import { Register } from './pages/Register';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { useAuth } from './contexts/AuthContext';
 
@@ -38,28 +39,32 @@ function Navigation() {
       </Link>
 
       
-      <Link 
-        to="/admin" 
-        className={`btn ${isActive('/admin') ? '' : 'btn-outline'}`}
-        style={{ 
-          padding: '8px 14px',
-          backgroundColor: isActive('/admin') ? 'var(--btn-bg)' : 'transparent',
-        }}
-      >
-        Admin
-      </Link>
+      {isAuthenticated && (
+        <>
+          <Link 
+            to="/admin" 
+            className={`btn ${isActive('/admin') ? '' : 'btn-outline'}`}
+            style={{ 
+              padding: '8px 14px',
+              backgroundColor: isActive('/admin') ? 'var(--btn-bg)' : 'transparent',
+            }}
+          >
+            Admin
+          </Link>
 
-      
-      <Link 
-        to="/doctor" 
-        className={`btn ${isActive('/doctor') ? '' : 'btn-outline'}`}
-        style={{ 
-          padding: '8px 14px',
-          backgroundColor: isActive('/doctor') ? 'var(--btn-bg)' : 'transparent',
-        }}
-      >
-        Doctor 
-      </Link>
+          
+          <Link 
+            to="/doctor" 
+            className={`btn ${isActive('/doctor') ? '' : 'btn-outline'}`}
+            style={{ 
+              padding: '8px 14px',
+              backgroundColor: isActive('/doctor') ? 'var(--btn-bg)' : 'transparent',
+            }}
+          >
+            Doctor 
+          </Link>
+        </>
+      )}
 
       
       {isAuthenticated && user && (
@@ -202,11 +207,11 @@ function Navigation() {
 
 export function App() {
   const location = useLocation();
-  const isLoginPage = location.pathname === '/login';
+  const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
 
   return (
     <div className="container">
-      {!isLoginPage && (
+      {!isAuthPage && (
         <header className="header">
           <h1 style={{ margin: 0 }}>
             <Link to="/" className="brand"></Link>
@@ -216,6 +221,7 @@ export function App() {
       )}
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/" element={
           <ProtectedRoute>
             <Home />

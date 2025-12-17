@@ -63,6 +63,18 @@ export const authApi = {
     const res = await instance.post('/auth/logout');
     return res.data;
   },
+
+  async register(email: string, password: string, name?: string): Promise<{ status: string; message: string }>{
+    const res = await instance.post('/auth/register', { email, password, name });
+    return res.data;
+  },
+
+
+
+  async emailLogin(email: string, password: string): Promise<{ status: string; user?: { email: string; name: string; picture: string } }>{
+    const res = await instance.post('/auth/login', { email, password });
+    return res.data;
+  },
 };
 
 
