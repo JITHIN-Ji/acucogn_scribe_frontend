@@ -29,11 +29,12 @@ jobs:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PURPLE_GLACIER_0E9A6650F }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: upload
-
-          # App configuration
-          app_location: "/"          # Root of your frontend project
-          api_location: ""           # Leave empty if no Azure Functions API
-          output_location: "dist"     # Build output folder (Vite/React/Vue)
+          app_location: "/"          # Frontend root
+          api_location: ""           # No Azure Functions API
+          output_location: "dist"     # Vite build output
+        env:
+          VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }}
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
